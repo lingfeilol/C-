@@ -1,0 +1,94 @@
+#include<iostream>
+using namespace std;
+#if 0
+//class Time
+//{
+//public:
+//	Time()
+//	{
+//		hour = 0;
+//		minute = 0;
+//		second = 0;  //全部初始化为0；
+//	}
+//	//无参构造函数
+//	void set_time();
+//	void show_time();
+//private:
+//	int hour;
+//	int minute;
+//	int second;
+//};
+
+class Time
+{
+public:
+	Time();//无参构造函数
+	Time(int, int, int);//声明带参数的构造函数
+	void set_time();
+	void show_time();
+private:
+	int hour;
+	int minute;
+	int second;
+};
+Time::Time(int h, int m, int s) //在类外定义带参数构造函数
+{
+	hour = h;
+	minute = m;
+	second = s;
+}
+void Time::set_time()
+{
+	cin >> hour;
+	cin >> minute;
+	cin >> second;
+}
+void Time::show_time()
+{
+	cout << hour << ":" << minute << ":" << second << endl;
+}
+
+int main()
+{
+	//Time monday;
+	//monday.set_time();  //设置时间
+	//monday.show_time();  //输出的设置的时间
+	//Time sunday;
+	//sunday.show_time();//输出的初始化的0
+	Time t1(10, 11, 12); //建立对象并指定时间值
+	t1.show_time();
+
+	return 0;
+}
+#endif
+class Time
+{
+public:
+	Time();//无参构造函数
+	Time(int h, int m, int s) : hour(h), minute(m), second(s) { }    //有参的构造函数，再用参数的初始化列表对数据成员初始化
+	void show_time();
+private:
+	int hour;
+	int minute;
+	int second;
+};
+Time::Time() //在类外定义无参的构造函数
+{
+	hour = 0;
+	minute = 1;
+	second = 2;
+}
+void Time::show_time()
+{
+	cout << hour << ":" << minute << ":" << second << endl;
+}
+
+int main()
+{
+	
+	Time t1(10, 11, 12); //建立对象并指定时间值
+	t1.show_time();
+	Time t2;//不指定实参  调用无参的构造函数
+	t2.show_time();
+	
+}
