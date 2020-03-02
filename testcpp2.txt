@@ -1,0 +1,79 @@
+//函数模板    
+template<typename T>   //模板声明，其中T 为类型参数
+T max(T a, T b)             //定义一个通用函数  用T做虚拟的类型名
+{
+	return a > b ? a : b;
+}
+int main()
+{
+	int x = 1;
+	int y = 3;
+	double i = 0.1;
+	double j = 0.3;
+	cout << max(x, y) << endl;  //调用函数模板， T被int取代
+	cout << max(i, j) << endl;  //调用函数时，系统会根据实参的类型来取代模板中的虚拟类型   只要函数体相同的函数都可以用这个模板来代替
+	return 0;
+}
+
+//引用
+void swap(int &a, int &b)
+{
+	int tmp = a;
+	a = b;
+	b = tmp;
+}
+int main()
+{
+	int a = 10;
+	int &b = a;//声明b是a的引用 ，即a的别名  共享同一内存单元
+	int &c = b;//具有传递性 ，即b和c都是a的别名
+	cout << a << b << c << endl;
+	//引用一般用来作为函数参数
+
+	int i = 2;
+	int j = 5;
+	swap(i, j);
+	cout << i << j << endl;
+	return 0;
+}
+
+ //内置函数   inline 和宏类似（编译时展开） 产开函数体代替调用函数
+inline int max(int &a, int &b)
+{
+	return a > b ? a : b;
+}
+int main()
+{
+	int i = 1;
+	int j = 2;
+	cout << max(i, j) << endl;
+	return 0;
+}
+#endif
+//字符串变量   c++标准库里的一个字符串类 ，用这种类可以定义对象
+#include<string>
+int main()
+{
+	string str1, str2;   //定义字符串对象
+	str1 = "hello";
+	str2 = "world!";   //初始化
+	str1 = str2; //两个字符串可以赋值；
+	cout << str1 << "  " << str2 << endl;
+	
+	str1[3] = 'A';//可以对字符串里的单一字符进行操作
+	cout << str1 << endl;
+
+//字符串操作不需要使用C语言库函数
+	//字符串赋值   用赋值号 =
+	str2 = str1;
+	//字符串连接用加号 +
+	str1 = str1 + str2;
+	//字符串比较用关系运算符  < > <= != 
+	if (str1 > str2)
+		cout << str1;
+
+
+	//字符串数组
+	string name[3];  //定义一个字符串数组，包含三个字符串函数
+	string name[3] = { "ni", "wo", "ta" }; //初始化
+}
