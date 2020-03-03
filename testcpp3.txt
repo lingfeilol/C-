@@ -1,0 +1,141 @@
+#include<iostream>
+#include<string> 
+using namespace std;
+
+//string 的简单使用
+
+//1.string类对象的常见构造
+void stringtest1()
+{
+	string s1();   //空的字符串
+	string s2("hello ");  //用c格式字符串来初始化字符串对象
+	string s3(s2);    //拷贝构造
+	string s4(10, 'Q');    //10个字符
+
+	//cout << s1;  会导致link错误
+	//没办法对 空的S1用cout输出
+	cout<<s2.size()<< endl;
+	cout<<s2<< endl;
+	cout<<s3<< endl;
+	cout<<s4<< endl;
+}
+//string类对象的容量操作
+void stringtest2()
+{
+	string s;
+	cin >> s;
+
+	cout << s.size() << endl;
+	cout << s.length() << endl;  //为了和其他容器对有效个数的统一表示，一般用size
+	cout << s.capacity() << endl;
+	cout << s << endl;
+	// 将s中的字符串清空，注意清空时只是将size清0，不改变底层空间的大小
+	s.clear();
+	cout << s.size() << endl;
+	if (s.empty())
+		cout << "NULL string" << endl;
+	string s1("hello world");
+	// 将s中有效字符个数增加到15个，多出位置用'a'进行填充
+	s1.resize(15, 'a');
+	cout << s1.size() << endl;
+	cout << s1.capacity() << endl;
+	cout << s1 << endl;
+	// 将s中有效字符个数增加到20个，多出位置用缺省值'\0'进行填充
+	s1.resize(20);
+	cout << s1.size() << endl;
+	cout << s1.capacity() << endl;
+	cout << s1 << endl;
+	// 将s中有效字符个数缩小到5个
+	s1.resize(5);
+	cout << s1.size() << endl;
+	cout << s1.capacity() << endl;
+	cout << s1 << endl;
+
+
+
+	s1.reserve(100);//将容量改到100
+	cout << s1.size() << endl;
+	cout << s1.capacity() << endl;
+
+	// 测试reserve参数小于string的底层空间大小时，是否会将空间缩小
+	s1.reserve(10);//将容量改到10
+	cout << s1.size() << endl;
+	cout << s1.capacity() << endl;
+
+	//在知道要插入多少个数据时，可以提前增容到多少，避免内部的多次增容操作
+}
+
+//3. string类对象的访问及遍历操作
+void stringtest3()
+{
+	string s = "hello world";
+	cout << s[2] << endl;
+	s[2] = 'A';
+	cout << s << endl;
+	//三种遍历方式
+	//1.for + operator[]
+	for (size_t i = 0; i < s.size(); i++)
+	{
+		cout << s[i];
+	}
+	cout << endl;
+	//2.范围for
+	for (auto e : s)
+	{
+		cout << e ;
+	}
+	cout << endl;
+	//3.迭代器   类似于指针
+	auto it = s.begin();
+	while(it != s.end())
+	{
+		cout << *it;
+		it++;
+	}
+	cout << endl;
+
+}
+//4. string类对象的修改操作
+void stringtest4()
+{
+	string s1("hello");
+	s1.push_back('i');//尾插一个字符
+	s1.append("love"); //在字符串后追加一个字符串
+	s1 += 'a';
+	s1 += "you"; //在字符串后追加一个字符串
+	string s2("haha");
+	s1 += s2;
+	cout << s1 << endl;
+	//获取后缀
+	string s3("main.cpp");
+	size_t pos = s3.find('.');
+	string ret = s3.substr(pos+1,s3.size()-pos);
+	cout<< ret;
+	// npos是string里面的一个静态成员变量
+	// static const size_t npos = -1;
+
+	// 取出url中的域名
+	string url("http://www.cplusplus.com/reference/string/string/find/");
+	size_t start = url.find("://");
+	if (pos == string::npos)
+	{
+		cout << "not find" << endl;
+		return;
+	}
+	start = start + 3;
+	size_t end = url.find('/', start);
+	cout << url.substr(start, end-start);
+	cout << endl;
+	// 删除url的协议前缀
+	size_t qian = url.find("://");
+	url.erase(0, pos + 3);
+	cout << url << endl;
+}
+int main()
+{
+	//stringtest1();
+	//stringtest2();
+	//stringtest3();
+	stringtest4();
+	return 0;
+}
