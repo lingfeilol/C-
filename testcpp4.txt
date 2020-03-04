@@ -1,0 +1,34 @@
+class Solution {
+public:
+    bool isnumorletter(char ch)
+    {
+        return (ch>='a'&& ch<='z')
+            || (ch>='A' && ch<='Z')
+            || (ch>='0'&& ch<='9');
+    }
+    bool isPalindrome(string s) {
+        //大写转成小写
+        for(auto& ch:s)
+        {
+            if(ch>='a'&&ch<='z')
+                ch-=32;
+        }
+        int begin=0;
+        int end=s.size()-1;
+        while(begin<end)
+        {
+            while(begin<end && !isnumorletter(s[begin]))  //跳过不是字母和数字的字符
+                begin++;
+            while(begin<end && !isnumorletter(s[end]))
+                end--;
+            
+            if(s[begin]!=s[end])
+                return false;
+            else
+                begin++;
+                end--;
+        }
+
+        return true; 
+    }
+};
