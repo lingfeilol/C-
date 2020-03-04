@@ -1,0 +1,53 @@
+class Solution {
+public:
+    string addStrings(string num1, string num2) {
+        // 从后往前相加，相加的结果到字符串可以使用insert头插
+        // 或者+=尾插以后再reverse过来
+        int end1=num1.size()-1;
+        int end2=num2.size()-1;
+
+        int val1=0;
+        int val2=0;
+        int next=0;//保存进位
+
+        string ret;//字符串对象来存值
+        while(end1>=0 || end2>=0)
+        {
+            if(end1>=0)
+            {
+                val1=num1[end1--]-'0';//字符数字转数字
+            }
+            else
+            {
+                val1=0;
+            }
+            
+            if(end2>=0)
+            {
+                val2=num2[end2--]-'0';
+            }
+            else
+            {
+                val2=0;
+            }
+            int x= val1 + val2 +next;
+            if(x>9)
+            {
+                x-=10;
+                next=1;
+            }
+            else
+            {
+                next=0;
+            }
+
+            ret += x+'0'; //转成字符
+        }
+        if(next==1)   //最后还多了一个进位  
+        {
+            ret += '1';
+        }
+        reverse(ret.begin(), ret.end());//反转
+        return ret;
+    }
+};
