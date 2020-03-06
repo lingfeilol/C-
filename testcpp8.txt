@@ -1,0 +1,23 @@
+
+鸽巢原理
+class Solution {
+public:
+    bool canConstruct(string ransomNote, string magazine) {
+        int tmp[26]={0};
+        int mtmp[26]={0};
+        for(int i=0;i<ransomNote.size();i++)
+        {
+            tmp[ransomNote[i]-'a']++;// 统计每个字出现的个数
+        }
+        for(int j=0;j<magazine.size();j++)
+        {
+            mtmp[magazine[j]-'a']++;   
+        }
+        for(int k=0;k<26;k++)
+        {
+            if(tmp[k]>mtmp[k])   //由于杂志里只能出现一次，所以比字母出现的个数即可
+                return false;
+        }
+        return true;
+    }
+};
