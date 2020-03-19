@@ -6,9 +6,9 @@ public:
 	int  GetYearMonthday(int year, int month)
 	{
 		static int monthday[13] = { 0,31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
-		if (year % 400 == 0 || ((year % 4 == 0) && (year % 100 == 0)))
+		if (year % 400 == 0 || ((year % 4 == 0) && (year % 100 == 0))&& month==2)
 		{
-			monthday[2] = 29;
+			return 29;
 		}
 		return monthday[month];
 	}
@@ -37,9 +37,9 @@ public:
 		_day = d._day;
 		return *this;
 	}
-	Date operator+(int days)
+	Date operator+(int days)   //单纯的算结果，自己的值不变  操作一个临时变量
 	{
-		Date ret = *this;
+		Date ret = *this;   //因为是初始化 这个其实调用的是拷贝构造函数，而不是赋值运算符重载    后者的使用情况是   先初始化Date ret;  再赋值 ret = *this;
 		ret._day += days;
 		while (ret._day > GetYearMonthday(ret._year, ret._month))
 		{
@@ -53,27 +53,69 @@ public:
 		}
 		return ret;
 	}
-	Date operator-(int days)
+	//Date operator+(int days)   // +=可以被 + 复用代码
+	//{
+	//	Date ret = *this;
+	//	ret += days;
+	//	return ret;
+	//}
+
+	Date& operator+=(int days)    //自己的值也改变了    
 	{
-		Date ret = *this;
-		
-		while(days >ret._day)
+		this->_day += days;
+		while (this->_day > GetYearMonthday(this->_year, this->_month))
 		{
-			days -= ret._day;
+			this->_day -= GetYearMonthday(this->_year, this->_month);
+			this->_month++;
+			if (this->_month == 13)
+			{
+				this->_year++;
+				this->_month = 1;
+			}
+		}
+		return *this;   
+	}
+	Date operator-(int days)     //自己值不变
+	{
+		/*Date ret = *this;
+		ret._day -= days;
+		while (ret._day <= 0)
+		{
 			ret._month--;
 			if (ret._month == 0)
 			{
 				ret._year--;
 				ret._month = 12;
 			}
-			if (GetYearMonthday(ret._year, ret._month) < days)
-			{
-				days = days - GetYearMonthday(ret._year, ret._month);
-				ret._month--;
-			}
+			ret._day += GetYearMonthday(ret._year, ret._month);
 		}
-		ret._day = GetYearMonthday(ret._year, ret._month)-days;
+		return ret;*/
+
+		//复用 -=
+		Date ret = *this;
+		ret -= days;
 		return ret;
+	}
+	Date & operator-=(int days)
+	{
+		if (days < 0)
+		{
+			*this += (-days);   //减的是负数，相当于加法 复用+=
+			return *this;
+		}
+		_day -= days;
+		while (_day <= 0)
+		{
+			_month--;
+			if (_month == 0)
+			{
+				_year--;
+				_month = 12;
+			}
+			_day += GetYearMonthday(_year, _month);
+		}
+		return *this;
+		
 	}
 	int Allyearday(int year) //全年天数
 	{
@@ -115,7 +157,7 @@ public:
 	}
 	Date& operator++()//前置自加
 	{
-		if (_day + 1 > GetYearMonthday(_year, _month))
+		/*if (_day + 1 > GetYearMonthday(_year, _month))
 		{
 			_month++;
 			if (_month == 13)
@@ -128,30 +170,39 @@ public:
 		}
 		else
 			_day++;
-		return *this;
+		return *this;*/
+
+		//复用+=
+		*this += 1;
+		return *this;  //返回加一后的值
 	}
 	Date operator++(int) //后置自加   返回的值是没有操作的
 	{
-		Date tmp = *this; //保留这个被操作数 ，等下返回的就是它
-		if (_day + 1 > GetYearMonthday(_year, _month))
-		{
-			_month++;
-			if (_month == 13)
-			{
-				_year++;
-				_month = 1;
-				_day = 1;
-			}
-			_day = 1;
-		}
-		else
-			_day++;
-		return tmp;
+		//Date tmp = *this; //保留这个被操作数 ，等下返回的就是它
+		//if (_day + 1 > GetYearMonthday(_year, _month))
+		//{
+		//	_month++;
+		//	if (_month == 13)
+		//	{
+		//		_year++;
+		//		_month = 1;
+		//		_day = 1;
+		//	}
+		//	_day = 1;
+		//}
+		//else
+		//	_day++;
+		//return tmp;
+		
+		//也可以复用+=
+		Date ret = *this;
+		*this += 1; //加一
+		return ret;  //返回加加操作之前的值
 	}
 
 	Date& operator--() //前置自减
 	{
-		if (_day - 1 == 0)
+		/*if (_day - 1 == 0)
 		{
 			_month--;
 			if (_month != 0)
@@ -167,11 +218,14 @@ public:
 		}
 		else
 			_day--;
+		return *this;*/
+		//复用-=
+		*this -= 1;
 		return *this;
 	}
 	Date operator--(int) //后置自减
 	{
-		Date tmp = *this;
+		/*Date tmp = *this;
 		if (_day - 1 == 0)
 		{
 			_month--;
@@ -188,12 +242,15 @@ public:
 		}
 		else
 			_day--;
-		return tmp;
+		return tmp;*/
+		Date ret = *this;   //拷贝构造临时变量
+		*this -= 1;
+		return ret;     //返回时，由于是临时变量 不能传引用，因为函数结束后，临时变量销毁，引用的本体没了，引用也不能用，  所以返回值 又是一次拷贝构造
 	}
 
-	bool operator>(const Date& d)const
+	inline bool operator>(const Date& d)const
 	{
-		if (_year > d._year)
+		/*if (_year > d._year)
 			return 1;
 		else if (_year < d._year)
 			return 0;
@@ -210,83 +267,35 @@ public:
 				else
 					return 0;
 			}
-		}
+		}*/
+		return (_year > d._year) ||
+			(_year == d._year && _month > d._month) ||
+			(_year == d._year&& _month == d._month && _year > d._year);
 	}
-	bool operator>=(const Date& d)const
-	{
-		if (_year > d._year)
-			return 1;
-		else if (_year < d._year)
-			return 0;
-		else
-		{
-			if (_month>d._month)
-				return 1;
-			else if (_month < d._month)
-				return 0;
-			else
-			{
-				if (_day>=d._day)
-					return 1;
-				else 
-					return 0;
-			}
-		}
-	}
-	bool operator<(const Date& d)const
-	{
-		if (_year < d._year)
-			return 1;
-		else if (_year > d._year)
-			return 0;
-		else
-		{
-			if (_month<d._month)
-				return 1;
-			else if (_month > d._month)
-				return 0;
-			else
-			{
-				if (_day<d._day)
-					return 1;
-				else
-					return 0;
-			}
-		}
-	}
-	bool operator<=(const Date& d)const
-	{
-		if (_year < d._year)
-			return 1;
-		else if (_year > d._year)
-			return 0;
-		else
-		{
-			if (_month<d._month)
-				return 1;
-			else if (_month > d._month)
-				return 0;
-			else
-			{
-				if (_day<=d._day)
-					return 1;
-				else
-					return 0;
-			}
-		}
-	}
-
-	bool operator==(const Date& d)const
+	inline bool operator==(const Date& d)const
 	{
 		return _year == d._year
 			&& _month == d._month
 			&& _day == d._day;
 	}
-	bool operator!=(const Date& d)const
+	//为了提高代码复用性 ，下面所有关系运算符重载都可以 复用上面这两个   即 > 和==     并且都可以写成内联函数
+	inline bool operator>=(const Date& d)const
 	{
-		return _year != d._year
-			&& _month != d._month
-			&& _day != d._day;
+		return (*this > d) || (*this == d);
+	}
+	inline bool operator<(const Date& d)const
+	{
+		return !(*this >= d);
+	}
+	inline bool operator<=(const Date& d)const
+	{
+		return !(*this>d);
+	}
+
+	
+	inline bool operator!=(const Date& d)const
+	{
+		return !(*this == d);
 	}
 	void print()
 	{
@@ -339,7 +348,9 @@ void test4()
 }
 int main()
 {
-	test4();
+	
+	test2();
+	
 	return 0;
 }
  
